@@ -38,6 +38,23 @@ export default class Adoption extends React.Component {
 		this.loadUser();
 		this.loadPet('cat');
 		this.loadPet('dog');
+		setInterval(this.cycleUsers, 10000);
+	}
+
+	cycleUsers() {
+		fetch(config.REACT_APP_API_BASE + 'users', {
+			method: 'DELETE',
+			headers: {
+				'content-type': 'application/json',
+			}
+		})
+			.then(res => {
+				if (!res.ok) {
+					throw new Error(res.status)
+				}
+			})
+			.then(() => this.loadUser())
+			.catch(error => this.setState({ error }))
 	}
 
 	loadUser() {
@@ -152,6 +169,7 @@ export default class Adoption extends React.Component {
 						story={this.state.dog.story}
 					/>
 				</div>
+				<p>Current adopter: {this.state.user}</p>
 				{this.state.userPlace === 0 &&
 					<div className='btnRow'>
 						<button className='adoptCat' onClick={() => this.adopt('cat')}>Adopt Cat</button>
