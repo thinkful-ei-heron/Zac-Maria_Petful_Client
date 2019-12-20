@@ -16,8 +16,18 @@
 }
 
 button {
-	height: 30px;
-	width: 90px;
+	margin: 0 20px;
+	height: 45px;
+	width: 140px;
+	font-size: 18px;
 	border: 1px solid black;
 	border-radius: 4px;
+}
+
+button:hover {
+	background-color: lightskyblue;
+}
+
+button:active {
+	background-color: lightseagreen;
 }

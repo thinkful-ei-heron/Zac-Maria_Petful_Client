@@ -80,6 +80,10 @@ export default class Adoption extends React.Component {
 			.catch(error => this.setState({ error }))
 	}
 
+	adopt(animal) {
+		console.log(animal);
+	}
+
 	render() {
 		return (
 			<section className='adoption'>
@@ -107,18 +111,15 @@ export default class Adoption extends React.Component {
 				</div>
 				{this.state.userPlace === 0 &&
 					<div className='btnRow'>
-						<button className='adoptCat'>Adopt Cat</button>
-						<button className='adoptBoth'>Adopt Both</button>
-						<button className='adoptDog'>Adopt Dog</button>
+						<button className='adoptCat' onClick={() => this.adopt('cat')}>Adopt Cat</button>
+						<button className='adoptDog' onClick={() => this.adopt('dog')}>Adopt Dog</button>
 					</div>}
 				{this.state.userPlace !== 0 &&
 					<div>
 						<h4>Please wait your turn to adopt a pet.</h4>
 						{this.state.userPlace === 1 && <p>There is 1 person ahead of you in line.</p>}
 						{this.state.userPlace !== 1 && <p>There are {this.state.userPlace} people ahead of you in line.</p>}
-					</div>
-
-				}
+					</div>}
 			</section>
 
 		)
