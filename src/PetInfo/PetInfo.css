@@ -1,12 +1,18 @@
 .petInfo {
-	width: 45%;
+	width: 40%;
 	border: 3px double black;
 }
 
-h3 {
-	margin: 12px 0 8px;
+.p {
+	line-height: 1;
 }
 
-p {
-	line-height: 1;
+h3 {
+	margin: 10px 0 0;
+}
+
+.imgPet {
+	width: 90%;
+	height: auto;
+	border-radius: 6px;
 }

@@ -26,6 +26,7 @@ export default class Adoption extends React.Component {
 			story: null
 		},
 
+		user: null,
 		userPlace: 0,
 
 		loading: false,
@@ -33,8 +34,30 @@ export default class Adoption extends React.Component {
 	}
 
 	componentDidMount() {
+		this.loadUser();
 		this.loadPet('cat');
 		this.loadPet('dog');
+	}
+
+	loadUser() {
+		this.setState({ loading: true });
+		fetch(config.REACT_APP_API_BASE + 'users', {
+			method: 'GET',
+			headers: {
+				'content-type': 'application/json',
+			}
+		})
+			.then(res => {
+				if (!res.ok) {
+					throw new Error(res.status)
+				}
+				return res.json()
+			})
+			.then(item => {
+				this.setState({ user: item });
+				this.setState({ loading: false });
+			})
+			.catch(error => this.setState({ error }))
 	}
 
 	loadPet(animal) {
@@ -76,6 +99,7 @@ export default class Adoption extends React.Component {
 						story: item.story
 					}
 				})
+				this.setState({ loading: false })
 			})
 			.catch(error => this.setState({ error }))
 	}
@@ -89,6 +113,7 @@ export default class Adoption extends React.Component {
 			<section className='adoption'>
 				<div className='infoRow'>
 					<PetInfo
+						loading={this.state.loading}
 						animal={'cat'}
 						imgURL={this.state.cat.imgURL}
 						imgDesc={this.state.cat.imgDesc}
@@ -99,6 +124,7 @@ export default class Adoption extends React.Component {
 						story={this.state.cat.story}
 					/>
 					<PetInfo
+						loading={this.state.loading}
 						animal={'dog'}
 						imgURL={this.state.dog.imgURL}
 						imgDesc={this.state.dog.imgDesc}
@@ -112,11 +138,13 @@ export default class Adoption extends React.Component {
 				{this.state.userPlace === 0 &&
 					<div className='btnRow'>
 						<button className='adoptCat' onClick={() => this.adopt('cat')}>Adopt Cat</button>
+						<h3>It's your turn to adopt a pet!</h3>
 						<button className='adoptDog' onClick={() => this.adopt('dog')}>Adopt Dog</button>
 					</div>}
 				{this.state.userPlace !== 0 &&
 					<div>
 						<h4>Please wait your turn to adopt a pet.</h4>
+						<p>Current adopter: {this.state.user}</p>
 						{this.state.userPlace === 1 && <p>There is 1 person ahead of you in line.</p>}
 						{this.state.userPlace !== 1 && <p>There are {this.state.userPlace} people ahead of you in line.</p>}
 					</div>}
