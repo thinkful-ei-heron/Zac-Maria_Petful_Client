@@ -29,7 +29,8 @@ export default class Adoption extends React.Component {
 		user: null,
 		userPlace: 0,
 
-		loading: false,
+		loadCat: false,
+		loadDog: false,
 		error: null
 	}
 
@@ -61,7 +62,9 @@ export default class Adoption extends React.Component {
 	}
 
 	loadPet(animal) {
-		this.setState({ loading: true });
+		if (animal === 'cat') this.setState({ loadCat: true });
+		else this.setState({ loadDog: true });
+
 		fetch(config.REACT_APP_API_BASE + animal, {
 			method: 'GET',
 			headers: {
@@ -75,6 +78,7 @@ export default class Adoption extends React.Component {
 				return res.json()
 			})
 			.then(item => {
+				console.log(item);
 				if (animal === 'cat') {
 					this.setState({
 						cat: {
@@ -99,13 +103,26 @@ export default class Adoption extends React.Component {
 						story: item.story
 					}
 				})
-				this.setState({ loading: false })
+				if (animal === 'cat') this.setState({ loadCat: false });
+				else this.setState({ loadDog: false });
 			})
 			.catch(error => this.setState({ error }))
 	}
 
 	adopt(animal) {
-		console.log(animal);
+		fetch(config.REACT_APP_API_BASE + animal, {
+			method: 'DELETE',
+			headers: {
+				'content-type': 'application/json',
+			}
+		})
+			.then(res => {
+				if (!res.ok) {
+					throw new Error(res.status)
+				}
+			})
+			.then(() => { this.loadPet(animal) })
+			.catch(error => this.setState({ error }))
 	}
 
 	render() {
@@ -113,7 +130,7 @@ export default class Adoption extends React.Component {
 			<section className='adoption'>
 				<div className='infoRow'>
 					<PetInfo
-						loading={this.state.loading}
+						loading={this.state.loadCat}
 						animal={'cat'}
 						imgURL={this.state.cat.imgURL}
 						imgDesc={this.state.cat.imgDesc}
@@ -124,7 +141,7 @@ export default class Adoption extends React.Component {
 						story={this.state.cat.story}
 					/>
 					<PetInfo
-						loading={this.state.loading}
+						loading={this.state.loadDog}
 						animal={'dog'}
 						imgURL={this.state.dog.imgURL}
 						imgDesc={this.state.dog.imgDesc}
