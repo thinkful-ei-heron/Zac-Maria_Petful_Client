@@ -8,7 +8,7 @@ export default function PetInfo(props) {
 			{props.name &&
 				<div>
 					<h3>{props.name}</h3>
-					<img href={this.state.imgURL} alt={props.imgDesc} />
+					<img src={props.imgURL} alt={props.imgDesc} />
 					<p>{props.sex} {props.breed}, age {props.age}</p>
 					<p>{props.story}</p>
 				</div>}

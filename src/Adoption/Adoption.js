@@ -39,7 +39,7 @@ export default class Adoption extends React.Component {
 
 	loadPet(animal) {
 		this.setState({ loading: true });
-		fetch(config.API_ENDPOINT + animal, {
+		fetch(config.REACT_APP_API_BASE + animal, {
 			method: 'GET',
 			headers: {
 				'content-type': 'application/json',
@@ -100,13 +100,13 @@ export default class Adoption extends React.Component {
 					/>
 					<PetInfo
 						animal={'dog'}
-						imgURL={this.state.cat.imgURL}
-						imgDesc={this.state.cat.imgDesc}
-						name={this.state.cat.name}
-						sex={this.state.cat.sex}
-						age={this.state.cat.age}
-						breed={this.state.cat.breed}
-						story={this.state.cat.story}
+						imgURL={this.state.dog.imgURL}
+						imgDesc={this.state.dog.imgDesc}
+						name={this.state.dog.name}
+						sex={this.state.dog.sex}
+						age={this.state.dog.age}
+						breed={this.state.dog.breed}
+						story={this.state.dog.story}
 					/>
 				</div>
 				{this.state.userPlace === 0 &&
