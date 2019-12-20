@@ -1,5 +1,4 @@
 .petInfo {
-	max-width: 80%;
-	margin: 0 auto;
-	border: 1px solid black;
+	width: 45%;
+	border: 3px double black;
 }

@@ -1,0 +1,23 @@
+.infoRow {
+	max-width: 80%;
+	margin: 15px auto;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
+.btnRow {
+	max-width: 70%;
+	margin: 0 auto;
+	padding: 15px 0;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+}
+
+button {
+	height: 30px;
+	width: 90px;
+	border: 1px solid black;
+	border-radius: 4px;
+}
