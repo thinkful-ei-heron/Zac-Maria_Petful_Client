@@ -34,18 +34,24 @@ export default class Adoption extends React.Component {
 		error: null
 	}
 
+	timer = null;
+
 	componentDidMount() {
 		this.loadUser();
 		this.loadPet('cat');
 		this.loadPet('dog');
-		setInterval(this.cycleUsers, 10000);
+		this.timer = setInterval(this.cycleUsers, 10000);
+	}
+
+	componentWillUnmount() {
+		clearInterval(this.timer);
 	}
 
 	cycleUsers() {
 		fetch(config.REACT_APP_API_BASE + 'users', {
 			method: 'DELETE',
 			headers: {
-				'content-type': 'application/json',
+				'content-type': 'application/json'
 			}
 		})
 			.then(res => {
@@ -72,6 +78,7 @@ export default class Adoption extends React.Component {
 				return res.json()
 			})
 			.then(item => {
+				console.log(item);
 				this.setState({ user: item });
 				this.setState({ loading: false });
 			})
@@ -130,7 +137,7 @@ export default class Adoption extends React.Component {
 		fetch(config.REACT_APP_API_BASE + animal, {
 			method: 'DELETE',
 			headers: {
-				'content-type': 'application/json',
+				'content-type': 'application/json'
 			}
 		})
 			.then(res => {
@@ -138,7 +145,10 @@ export default class Adoption extends React.Component {
 					throw new Error(res.status)
 				}
 			})
-			.then(() => { this.loadPet(animal) })
+			.then(() => {
+				this.loadPet(animal);
+				this.cycleUsers();
+			})
 			.catch(error => this.setState({ error }))
 	}
 
@@ -169,19 +179,18 @@ export default class Adoption extends React.Component {
 						story={this.state.dog.story}
 					/>
 				</div>
-				<p>Current adopter: {this.state.user}</p>
-				{this.state.userPlace === 0 &&
+				{this.state.user === 'Reese Fletcher' &&
 					<div className='btnRow'>
 						<button className='adoptCat' onClick={() => this.adopt('cat')}>Adopt Cat</button>
 						<h3>It's your turn to adopt a pet!</h3>
 						<button className='adoptDog' onClick={() => this.adopt('dog')}>Adopt Dog</button>
 					</div>}
-				{this.state.userPlace !== 0 &&
+				{this.state.user !== 'Reese Fletcher' &&
 					<div>
 						<h4>Please wait your turn to adopt a pet.</h4>
 						<p>Current adopter: {this.state.user}</p>
-						{this.state.userPlace === 1 && <p>There is 1 person ahead of you in line.</p>}
-						{this.state.userPlace !== 1 && <p>There are {this.state.userPlace} people ahead of you in line.</p>}
+						{/* {this.state.userPlace === 1 && <p>There is 1 person ahead of you in line.</p>}
+						{this.state.userPlace !== 1 && <p>There are {this.state.userPlace} people ahead of you in line.</p>} */}
 					</div>}
 			</section>
 
