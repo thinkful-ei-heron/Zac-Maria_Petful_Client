@@ -26,9 +26,8 @@ export default class Adoption extends React.Component {
 			story: null
 		},
 
-		user: null,
-		userPlace: 0,
-
+		users: null,
+		loadUsers: true,
 		loadCat: false,
 		loadDog: false,
 		error: null
@@ -37,7 +36,7 @@ export default class Adoption extends React.Component {
 	timer = null;
 
 	componentDidMount() {
-		this.loadUser();
+		this.loadUsers();
 		this.loadPet('cat');
 		this.loadPet('dog');
 		this.timer = setInterval(this.cycleUsers, 10000);
@@ -47,7 +46,7 @@ export default class Adoption extends React.Component {
 		clearInterval(this.timer);
 	}
 
-	cycleUsers() {
+	cycleUsers = () => {
 		fetch(config.REACT_APP_API_BASE + 'users', {
 			method: 'DELETE',
 			headers: {
@@ -59,12 +58,12 @@ export default class Adoption extends React.Component {
 					throw new Error(res.status)
 				}
 			})
-			.then(() => this.loadUser())
+			.then(() => this.loadUsers())
 			.catch(error => this.setState({ error }))
 	}
 
-	loadUser() {
-		this.setState({ loading: true });
+	loadUsers = () => {
+		console.log('getting users....')
 		fetch(config.REACT_APP_API_BASE + 'users', {
 			method: 'GET',
 			headers: {
@@ -77,15 +76,15 @@ export default class Adoption extends React.Component {
 				}
 				return res.json()
 			})
-			.then(item => {
-				console.log(item);
-				this.setState({ user: item });
-				this.setState({ loading: false });
+			.then(list => {
+				console.log(list);
+				this.setState({ users: list });
+				this.setState({ loadUsers: false });
 			})
 			.catch(error => this.setState({ error }))
 	}
 
-	loadPet(animal) {
+	loadPet = animal => {
 		if (animal === 'cat') this.setState({ loadCat: true });
 		else this.setState({ loadDog: true });
 
@@ -133,7 +132,7 @@ export default class Adoption extends React.Component {
 			.catch(error => this.setState({ error }))
 	}
 
-	adopt(animal) {
+	adopt = animal => {
 		fetch(config.REACT_APP_API_BASE + animal, {
 			method: 'DELETE',
 			headers: {
@@ -179,18 +178,16 @@ export default class Adoption extends React.Component {
 						story={this.state.dog.story}
 					/>
 				</div>
-				{this.state.user === 'Reese Fletcher' &&
+				{this.state.users === 'Reese Fletcher' &&
 					<div className='btnRow'>
 						<button className='adoptCat' onClick={() => this.adopt('cat')}>Adopt Cat</button>
 						<h3>It's your turn to adopt a pet!</h3>
 						<button className='adoptDog' onClick={() => this.adopt('dog')}>Adopt Dog</button>
 					</div>}
-				{this.state.user !== 'Reese Fletcher' &&
+				{this.state.users !== 'Reese Fletcher' &&
 					<div>
 						<h4>Please wait your turn to adopt a pet.</h4>
-						<p>Current adopter: {this.state.user}</p>
-						{/* {this.state.userPlace === 1 && <p>There is 1 person ahead of you in line.</p>}
-						{this.state.userPlace !== 1 && <p>There are {this.state.userPlace} people ahead of you in line.</p>} */}
+						{!this.state.loadUsers && <p>Current adopters: {this.state.users.join(', ')}</p>}
 					</div>}
 			</section>
 
