@@ -6,6 +6,8 @@ import PetInfo from '../PetInfo/PetInfo';
 import './Adoption.css'
 
 export default class Adoption extends React.Component {
+	_isMounted = false;
+
 	state = {
 		cat: {
 			imgURL: null,
@@ -38,6 +40,7 @@ export default class Adoption extends React.Component {
 	timer = null;
 
 	componentDidMount() {
+		this._isMounted = true;
 		this.loadUsers();
 		this.loadPet('cat');
 		this.loadPet('dog');
@@ -46,6 +49,7 @@ export default class Adoption extends React.Component {
 
 	componentWillUnmount() {
 		clearInterval(this.timer);
+		this._isMounted = false;
 	}
 
 	cycleUsers = () => {
@@ -242,7 +246,7 @@ export default class Adoption extends React.Component {
 								}
 							</div>
 						}
-						{!this.state.loadUsers && <p>Current adopters: {this.state.users.join(', ')}</p>}
+						{!this.state.loadUsers && this._isMounted && <p>Current adopters: {this.state.users.join(', ')}</p>}
 					</>
 				}
 				{this.state.me && <button onClick={this.resetHandler}>Reset Queue</button>}
