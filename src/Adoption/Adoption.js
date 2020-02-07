@@ -27,6 +27,8 @@ export default class Adoption extends React.Component {
 		},
 
 		users: null,
+		me: null,
+
 		loadUsers: true,
 		loadCat: false,
 		loadDog: false,
@@ -63,7 +65,6 @@ export default class Adoption extends React.Component {
 	}
 
 	loadUsers = () => {
-		console.log('getting users....')
 		fetch(config.REACT_APP_API_BASE + 'users', {
 			method: 'GET',
 			headers: {
@@ -77,7 +78,6 @@ export default class Adoption extends React.Component {
 				return res.json()
 			})
 			.then(list => {
-				console.log(list);
 				this.setState({ users: list });
 				this.setState({ loadUsers: false });
 			})
@@ -101,7 +101,6 @@ export default class Adoption extends React.Component {
 				return res.json()
 			})
 			.then(item => {
-				console.log(item);
 				if (animal === 'cat') {
 					this.setState({
 						cat: {
@@ -151,6 +150,29 @@ export default class Adoption extends React.Component {
 			.catch(error => this.setState({ error }))
 	}
 
+	joinHandler = ev => {
+		ev.preventDefault();
+		const name = document.getElementById('name').value;
+
+		fetch(config.REACT_APP_API_BASE + 'users', {
+			method: 'POST',
+			headers: {
+				'content-type': 'application/json',
+			},
+			body: JSON.stringify({ name })
+		})
+			.then(res => {
+				if (!res.ok) {
+					throw new Error(res.status)
+				}
+			})
+			.then(() => {
+				this.setState({ me: name })
+				this.loadUsers();
+			})
+			.catch(error => this.setState({ error }))
+	}
+
 	render() {
 		return (
 			<section className='adoption'>
@@ -178,17 +200,33 @@ export default class Adoption extends React.Component {
 						story={this.state.dog.story}
 					/>
 				</div>
-				{this.state.users === 'Reese Fletcher' &&
-					<div className='btnRow'>
-						<button className='adoptCat' onClick={() => this.adopt('cat')}>Adopt Cat</button>
-						<h3>It's your turn to adopt a pet!</h3>
-						<button className='adoptDog' onClick={() => this.adopt('dog')}>Adopt Dog</button>
-					</div>}
-				{this.state.users !== 'Reese Fletcher' &&
-					<div>
-						<h4>Please wait your turn to adopt a pet.</h4>
-						{!this.state.loadUsers && <p>Current adopters: {this.state.users.join(', ')}</p>}
-					</div>}
+				{!this.state.loadUsers &&
+					<>
+						{this.state.users[0] === this.state.me
+							? <div className='btnRow'>
+								<button className='adoptCat' onClick={() => this.adopt('cat')}>Adopt Cat</button>
+								<h3>It's your turn to adopt a pet!</h3>
+								<button className='adoptDog' onClick={() => this.adopt('dog')}>Adopt Dog</button>
+							</div>
+							: <div>
+								{this.state.me
+									? <h4>Please wait your turn to adopt a pet.</h4>
+									: <form onSubmit={ev => this.joinHandler(ev)}>
+										<input
+											type='text'
+											id='name'
+											required
+										/>
+										<input type='submit' value='Join Queue' />
+									</form>
+								}
+
+								{!this.state.loadUsers && <p>Current adopters: {this.state.users.join(', ')}</p>}
+							</div>
+						}
+					</>
+				}
+
 			</section>
 
 		)
