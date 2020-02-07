@@ -157,7 +157,7 @@ export default class Adoption extends React.Component {
 		fetch(config.REACT_APP_API_BASE + 'users', {
 			method: 'POST',
 			headers: {
-				'content-type': 'application/json',
+				'content-type': 'application/json'
 			},
 			body: JSON.stringify({ name })
 		})
@@ -168,6 +168,26 @@ export default class Adoption extends React.Component {
 			})
 			.then(() => {
 				this.setState({ me: name })
+				this.loadUsers();
+			})
+			.catch(error => this.setState({ error }))
+	}
+
+	resetHandler = () => {
+		fetch(config.REACT_APP_API_BASE + 'users', {
+			method: 'POST',
+			headers: {
+				'content-type': 'application/json'
+			},
+			body: JSON.stringify({ reset: true })
+		})
+			.then(res => {
+				if (!res.ok) {
+					throw new Error(res.status)
+				}
+			})
+			.then(() => {
+				this.setState({ me: null })
 				this.loadUsers();
 			})
 			.catch(error => this.setState({ error }))
@@ -220,13 +240,12 @@ export default class Adoption extends React.Component {
 										<input type='submit' value='Join Queue' />
 									</form>
 								}
-
-								{!this.state.loadUsers && <p>Current adopters: {this.state.users.join(', ')}</p>}
 							</div>
 						}
+						{!this.state.loadUsers && <p>Current adopters: {this.state.users.join(', ')}</p>}
 					</>
 				}
-
+				{this.state.me && <button onClick={this.resetHandler}>Reset Queue</button>}
 			</section>
 
 		)
