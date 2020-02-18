@@ -249,7 +249,7 @@ export default class Adoption extends React.Component {
 						{!this.state.loadUsers && this._isMounted && <p>Current adopters: {this.state.users.join(', ')}</p>}
 					</>
 				}
-				{this.state.me && <button onClick={this.resetHandler}>Reset Queue</button>}
+				<button onClick={this.resetHandler}>Reset Queue</button>
 			</section>
 
 		)

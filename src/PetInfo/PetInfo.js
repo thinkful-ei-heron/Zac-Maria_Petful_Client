@@ -5,6 +5,7 @@ import Loading from '../Loading/Loading';
 import './PetInfo.css';
 
 export default function PetInfo(props) {
+
 	return (
 		<section className='petInfo'>
 			{props.loading && <Loading />}
@@ -12,7 +13,11 @@ export default function PetInfo(props) {
 				{props.name &&
 					<div>
 						<h2>{props.name}</h2>
-						<img className='imgPet' src={props.imgURL} alt={props.imgDesc} />
+						<img
+							className='imgPet'
+							src={props.imgURL}
+							alt={props.imgDesc}
+						/>
 						<p className='p'>{props.sex} {props.breed}, age {props.age}</p>
 						<p className='p'>{props.story}</p>
 					</div>}
